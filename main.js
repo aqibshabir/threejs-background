@@ -2,6 +2,7 @@ import './style.css'
 import * as THREE from 'three'
 import { Timer } from 'three/addons/misc/Timer.js'
 import GUI from 'lil-gui'
+import gsap from 'gsap'
 
 // Creating Canvas
 const canvasHTML = document.createElement('canvas')
@@ -21,7 +22,7 @@ gui
 .addColor(paramaters, 'materialColor')
 .onChange(() => {
   material.color.set(paramaters.materialColor)
-  particleMaterial.color.set(paramaters.materialColor)
+  particlesMaterial.color.set(paramaters.materialColor)
 })
 
 
@@ -74,14 +75,14 @@ for(let i = 0; i < paramaters.count; i++){
   positions[i * 3 + 1] = objectsDistance * 0.5 - Math.random() * objectsDistance * sectionMeshes.length
   positions[i * 3 + 2] = (Math.random() - 0.5) * 10
 }
-const particleGeometry = new THREE.BufferGeometry()
-particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
-const particleMaterial = new THREE.PointsMaterial({
+const particlesGeometry = new THREE.BufferGeometry()
+particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3))
+const particlesMaterial = new THREE.PointsMaterial({
   color: paramaters.materialColor,
   size: 0.03,
   sizeAttenuation: true
 })
-const particles = new THREE.Points(particleGeometry, particleMaterial)
+const particles = new THREE.Points(particlesGeometry, particlesMaterial)
 scene.add(particles)
 
 // Lighting
@@ -104,9 +105,24 @@ cameraGroup.add(camera)
 
 // Scroll
 let scrollY = window.scrollY
+let currentSection = 0
 window.addEventListener('scroll', () => {
   scrollY = window.scrollY
-})
+  const newSection = Math.round(scrollY / sizes.height)
+  if(currentSection !== newSection){
+    currentSection = newSection
+    gsap.to(
+      sectionMeshes[currentSection].rotation,
+      {
+        duration: 1.5,
+        ease: 'power2.inOut',
+        x: '+=3',
+        y: '+=6',
+        z: '+=1.5'
+      }
+    )
+  }
+ })
 
 // Cursor
 const cursor = {
@@ -146,12 +162,11 @@ const timer = new Timer()
 const tick = () => {
   // timer for animation
   timer.update()
-  const elapsed = timer.getElapsed()
   const delta = timer.getDelta()
   // rotation animation
   for(const mesh of sectionMeshes){
-    mesh.rotation.x = elapsed * 0.1
-    mesh.rotation.y = elapsed * 0.12
+    mesh.rotation.x += delta * 0.1
+    mesh.rotation.y += delta * 0.12
   }
   // camera scroll
   camera.position.y = - scrollY / sizes.height * objectsDistance

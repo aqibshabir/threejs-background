@@ -59,6 +59,9 @@ const objectsDistance = 4
 mesh1.position.y = - objectsDistance * 0
 mesh2.position.y = - objectsDistance * 1
 mesh3.position.y = - objectsDistance * 2
+mesh1.position.x = 2
+mesh2.position.x = - 2
+mesh3.position.x = 2
 
 
 // Lighting
@@ -77,6 +80,11 @@ const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height)
 camera.position.z = 3
 scene.add(camera)
 
+// Scroll
+let scrollY = window.scrollY
+window.addEventListener('scroll', (event) => {
+  scrollY = window.scrollY
+})
 
 // Renderer
 const renderer = new THREE.WebGLRenderer({
@@ -91,7 +99,6 @@ renderer.render(scene, camera)
 window.addEventListener('resize', () => {
   sizes.height = window.innerHeight
   sizes.width = window.innerWidth
-
   camera.aspect = sizes.width / sizes.height
 
   camera.updateProjectionMatrix()
@@ -113,6 +120,8 @@ const tick = () => {
     mesh.rotation.x = elapsed * 0.1
     mesh.rotation.y = elapsed * 0.12
   }
+  // camera scroll
+  camera.position.y = - scrollY / sizes.height * objectsDistance
 
   // rendering any changes
   renderer.render(scene, camera)

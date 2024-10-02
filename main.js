@@ -46,7 +46,7 @@ const mesh1 = new THREE.Mesh(
   material
 )
 const mesh2 = new THREE.Mesh(
-  new THREE.ConeGeometry(1, 2, 32),
+  new THREE.OctahedronGeometry(1),
   material
 )
 const mesh3 = new THREE.Mesh(
@@ -64,9 +64,9 @@ mesh1.position.y = - objectsDistance * 0
 mesh2.position.y = - objectsDistance * 1
 mesh3.position.y = - objectsDistance * 2
 // X
-mesh1.position.x = 2
-mesh2.position.x = - 2
-mesh3.position.x = 2
+mesh1.position.x = 1
+mesh2.position.x = - 1
+mesh3.position.x = 1
 
 // Particles
 const positions = new Float32Array(paramaters.count)
@@ -115,7 +115,7 @@ window.addEventListener('scroll', () => {
       sectionMeshes[currentSection].rotation,
       {
         duration: 1.5,
-        ease: 'power2.inOut',
+        ease: 'back.inOut',
         x: '+=3',
         y: '+=6',
         z: '+=1.5'
@@ -150,6 +150,7 @@ window.addEventListener('resize', () => {
   camera.aspect = sizes.width / sizes.height
 
   camera.updateProjectionMatrix()
+
 
   renderer.setSize(sizes.width, sizes.height)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio),2)
